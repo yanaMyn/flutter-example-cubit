@@ -22,17 +22,3 @@ class CounterCubit extends Cubit<int> {
     print(change);
   }
 }
-
-class DeCounterCubit extends Cubit<int> {
-  DeCounterCubit(int initialState): super(initialState);
-
-  void decrement() => emit(state - 1);
-
-  @override
-  void onChange(Change<int> change) {
-    super.onChange(change);
-    print("change");
-    print(change);
-  }
-}
-
