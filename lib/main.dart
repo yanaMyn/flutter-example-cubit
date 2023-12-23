@@ -1,3 +1,4 @@
+import 'package:example_bloc/bloc/counter_event.dart';
 import 'package:example_bloc/cubit/counter_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +13,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => CounterCubit(0),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CounterCubit(0),
+        ),
+        BlocProvider(
+          create: (context) => CounterBloc(),
+        ),
+      ],
       child: MaterialApp(
         title: 'Flutter Demo',
         theme: ThemeData(
@@ -44,9 +52,8 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: BlocConsumer<CounterCubit, int>(
-          listener: (context, state) {
-          },
+        child: BlocConsumer<CounterBloc, int>(
+          listener: (context, state) {},
           builder: (context, state) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -58,16 +65,32 @@ class _MyHomePageState extends State<MyHomePage> {
                   state.toString(),
                   style: Theme.of(context).textTheme.headlineMedium,
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        context.read<CounterBloc>().add(
+                              CounterDecrementPressed(),
+                            );
+                      },
+                      icon: const Icon(Icons.remove),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        context.read<CounterBloc>().add(
+                              CounterIncrementPressed(),
+                            );
+                      },
+                      icon: const Icon(Icons.add),
+                    ),
+                  ],
+                ),
               ],
             );
           },
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => context.read<CounterCubit>().increment(),
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
